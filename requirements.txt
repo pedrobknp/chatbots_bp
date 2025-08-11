@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+wheel
+loguru
+python-dotenv
+unidecode
+redis
+pymongo
+numpy
+pydantic
+openai
+requests
+email-validator

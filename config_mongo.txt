@@ -1,0 +1,8 @@
+use chatbot_bp
+db.createUser(
+  {
+    user: "chatbot_bp",
+    pwd: "chatbot_bp",
+    roles: [ { role: "readWrite", db: "chatbot_bp" } ]
+  }
+)

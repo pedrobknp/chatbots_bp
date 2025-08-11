@@ -1,0 +1,17 @@
+*.pyc
+.idea/csv-editor.xml
+.idea/misc.xml
+*.csv
+.idea/.name
+*.jsonl
+.idea/runConfigurations/Get_Update_Status_Batch.xml
+.idea/copilotDiffState.xml
+batch/temp_files/caracteristicas_batch_68891eae7104819098b000e9470c920f_file-HBJRkqztjTJNfZLia4QyTv_resultado.json
+batch/temp_files/padronizacao_batch_688a69b820fc8190b2c4d8d9165513a3_file-DRK6pqBHn28n271MKpnN78_resultado.json
+.idea/chatbot_bp.iml
+.idea/CustomInspectionsConfig.xml
+.idea/dictionaries/project.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/modules.xml
+.idea/runConfigurations/CHATBOT_API.xml
