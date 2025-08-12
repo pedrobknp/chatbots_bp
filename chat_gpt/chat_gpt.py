@@ -25,7 +25,7 @@ class ChatGpt:
         """
         try:
             redis = RedisAdapter(self.config.get('REDIS_DB_CONTROLES'))
-            resultado = redis.retorna_chave_disponivel(self.config.get("REDIS_CHAT_GPT_KEYS_KEY"), self.config.get("CHAT_GPT_API_KEYS")).decode(self.config.get('REDIS_ENCODING'))
+            resultado = redis.retorna_chave_disponivel(self.config.get("REDIS_CHAT_GPT_KEYS_KEY"))
             redis.close()
 
             return resultado

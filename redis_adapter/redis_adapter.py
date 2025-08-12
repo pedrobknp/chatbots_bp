@@ -180,26 +180,21 @@ class RedisAdapter:
         except Exception as ex:
             raise ex
 
-    def retorna_chave_disponivel(self, keys_key: str, keys: str):
+    def retorna_chave_disponivel(self, keys_key: str):
         """
         Retorna uma chave disponível para a utilização das APIS de IA (através da rotação das chaves)
         :param keys_key: Chave no Redis onde as chaves estão armazenadas
-        :param keys: Chaves disponíveis
         :return: Chave disponível para uso
         """
         try:
-            if keys is None or keys == '':
-                raise Exception('Chaves não configuradas')
-
             # Verificando se as chaves estão no Redis
             if not self.conn.exists(keys_key):
-                for chave in keys.strip().split(','):
-                    self.conn.sadd(keys_key, chave)
+                raise Exception(f'Chaves não encontradas no Redis para a key: {keys_key}')
 
             # Retornando a chave disponível
             chave = self.conn.srandmember(keys_key)
 
-            return chave
+            return chave.decode('utf-8')
         except Exception as ex:
             raise ex
 
