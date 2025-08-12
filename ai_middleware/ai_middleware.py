@@ -87,6 +87,8 @@ class AIMiddleware:
         try:
             # buscando o contexto do chatbot
             nome_campo = chatbot.get("campo")
+            historico = chatbot.get("historico", "")
+            texto = chatbot.get("texto", "")
             context_model = ContextModel(logs=self.logs)
             context = context_model.get_context(field=nome_campo)
             context_model.close_connection()
@@ -102,22 +104,25 @@ class AIMiddleware:
             prompt_chatbot = f"""Tendo como nome do campo: '{nome_campo.strip()}'\n 
             Tendo como contexto do campo: '{contexto.strip()}'\n
             Tendo como limite de caracteres do campo: {int(limite)}\n
-            Tendo como valor atual do campo: '{chatbot.get("texto", "").strip()}'\n
+            Tendo como valor atual do campo: '{texto.strip()}'\n
+            Tendo como última resposta sua como agente (histórico): '{historico.strip()}'\n
             Tendo como comando do usuário: '{chatbot.get("comando").strip()}'\n
             Seguindo a sua orientação como chatbot do sistema Banco de Preços. Especializado em automatizar o preenchimento de alguns campos em diversos formulários da plataforma.
             Retorne o sumário da alteração e o texto criado/ajustado para os dados do campo e comando informados.
             Observações: 
             - Se o limite for igual a zero (0). Significa que o campo não possui limite de caracteres, ou seja, pode ser preenchido com qualquer quantidade de caracteres.
-            - Se o texto for vazio, significa que o campo não possui valor atual preenchido, ou seja, está em branco. Você deve preencher o campo seguindo o comando do usuário, e as informações recebidas sobre o campo, caso seja possível criar o texto a partir dessas informações.
+            - Se o texto for vazio, significa que o campo não possui valor atual preenchido, ou seja, está em branco. Você deverá atuar em cima da última resposta sua como agente e o comando enviado pelo usuário.
+            - Se ambos os valores do texto e do histórico forem vazios, você deverá atuar apenas em cima do comando enviado pelo usuário.
+            - Se o comando do usuário não tiver relação com o texto, com o histórico e/ou o contexto do campo, ou não for claro, você deve retornar uma mensagem informando que não foi possível entender o comando, no sumário e retornar o texto em branco.
             """
 
             prompt_assistente = """Você é um chatbot do sistema Banco de Preços. Especializado em automatizar o preenchimento de alguns campos em diversos formulários da plataforma.
-            Você vai receber como entrada o nome do campo no formulário (o valor da tag name do form html), o contexto do campo (uma descrição do que é o campo, sua importância e significado e/ou como ele deve ser preenchido), o limite de caracteres do campo (quantidade máxima de caracteres que o campo aceita), e se houver, o valor atual do campo (o valor que está atualmente preenchido no campo) que deverá ser ajustado a partir do comando do usuário.
+            Você vai receber como entrada o nome do campo no formulário (o valor da tag name do form html), o contexto do campo (uma descrição do que é o campo, sua importância e significado e/ou como ele deve ser preenchido), o limite de caracteres do campo (quantidade máxima de caracteres que o campo aceita), e se houver, o valor atual do campo (o valor que está atualmente preenchido no campo), e sua última resposta como agente (histórico). Que são os valores que deverá utilizar para alterar a depender do comando do usuário.
             Além dessas entradas referentes ao campo, você também vai receber o comando do usuário (uma instrução de como o usuário deseja que o campo seja preenchido ou ajustado).
-            Com base nessas entradas você vai ajustar o valor do campo seguindo o comando do usuário.
+            Com base nessas entradas você vai ajustar o valor do campo seguindo o comando do usuário ou ajustar a sua última resposta (histórico) também seguindo o comando do usuário.
             Os ajustes serão feitos seguindo o comando enviado pelo usuário e as informações do campo, principalmente o contexto, que vai definir de que se trata e como deve ser preenchido o campo.
-            Se o comando do usuário não tiver relação com o texto e/ou o contexto do campo, ou não for claro você deve retornar uma mensagem informando que não foi possível entender o comando, no sumário e retornar o texto em branco.
-            Você sempre irá responder com um Json contendo o sumário da alteração executada e o texto criado/ajustado.
+            Se o comando do usuário não tiver relação com o texto, com a o histórico e/ou o contexto do campo, ou não for claro você deve retornar uma mensagem informando que não foi possível entender o comando, no sumário e retornar o texto em branco.
+            Você sempre irá responder com um Json contendo o sumário da alteração executada e o texto criado/ajustado ou o histórico ajustado, a depender do comando do usuário e da existência do texto e do histórico.
             O sumário da alteração será uma descrição curta e objetiva do que foi executado.
             O texto criado/ajustado será o valor do campo ajustado, seguindo o comando do usuário e as informações do campo.
             No Json de retorno o sumário da alteração estará na chave ("sumario") e o texto criado/ajustado estará na chave ("texto")."""
