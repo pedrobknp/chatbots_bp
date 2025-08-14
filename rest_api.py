@@ -112,10 +112,10 @@ async def chatbot(body: PayloadPadrao, request: Request) -> RetornoPadrao:
     """
     try:
         # Lendo o cabeçalho e validando o token
-        # token = request.headers.get("Authorization", "").replace("Bearer ", "").strip()
-        # valido, payload = validar_token_api_auth(token=token)
-        # if not valido:
-        #     raise HTTPException(status_code=401, detail="Token inválido ou expirado.")
+        token = request.headers.get("Authorization", "").replace("Bearer ", "").strip()
+        valido, payload = validar_token_api_auth(token=token)
+        if not valido:
+            raise HTTPException(status_code=401, detail="Token inválido ou expirado.")
 
         body_dict = body.model_dump()
 
@@ -124,8 +124,7 @@ async def chatbot(body: PayloadPadrao, request: Request) -> RetornoPadrao:
         sumario, texto, tokens = ai_middleware.inferir_chatbot_from_context(body_dict)
 
         # Logando consumo de tokens
-        # logs.success({"requisitor": payload, "tokens": tokens})
-        logs.success({"solicitacao": body_dict, "tokens": tokens})
+        logs.success({"requisitor": payload, "tokens": tokens})
 
         return RetornoPadrao(sumario=sumario, texto=texto)
     except HTTPException as http_ex:
