@@ -40,7 +40,7 @@ class RetornoPadrao(BaseModel):
     Classe de modelo padrão para retorno de sucesso
     """
     sumario: str
-    texto: str
+    texto: str | None = None
 
 
 class PayloadPadrao(BaseModel):
