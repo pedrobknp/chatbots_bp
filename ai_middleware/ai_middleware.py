@@ -114,6 +114,7 @@ class AIMiddleware:
             - Se o texto for vazio, significa que o campo não possui valor atual preenchido, ou seja, está em branco. Você deverá atuar em cima da última resposta sua como agente e o comando enviado pelo usuário.
             - Se ambos os valores do texto e do histórico forem vazios, você deverá atuar apenas em cima do comando enviado pelo usuário.
             - Se o comando do usuário não tiver nenhuma relação com o texto e/ou com o histórico, ou não for claro, você deve retornar uma mensagem informando que não foi possível entender o comando, no sumário e retornar o valor do texto None (None do Python).
+            - O comando não precisa ter relação direta com o contexto do campo, o contexto deve ser utilizado apenas como balizador de como responder para cada campo informado.
             """
 
             prompt_assistente = """Você é um chatbot do sistema Banco de Preços. Especializado em automatizar o preenchimento de alguns campos em diversos formulários da plataforma.
