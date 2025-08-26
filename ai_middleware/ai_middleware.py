@@ -98,12 +98,13 @@ class AIMiddleware:
 
             # Separando os valores para o chatbot
             contexto = context.get("context")
-            limite = context.get("limit")
+            limite_base = context.get("soft_limit", 0)
+            limite_maximo = context.get("hard_limit", 0)
 
             # Preparando o chatbot
             prompt_chatbot = f"""Tendo como nome do campo: '{nome_campo.strip()}'\n 
             Tendo como contexto do campo: '{contexto.strip()}'\n
-            Tendo como limite de caracteres do campo: {int(limite)}\n
+            Tendo como limite de caracteres do campo: {int(limite_base)}\n
             Tendo como valor atual do campo: '{texto.strip()}'\n
             Tendo como última resposta sua como agente (histórico): '{historico.strip()}'\n
             Tendo como comando do usuário: '{chatbot.get("comando").strip()}'\n
@@ -115,6 +116,7 @@ class AIMiddleware:
             - Se ambos os valores do texto e do histórico forem vazios, você deverá atuar apenas em cima do comando enviado pelo usuário.
             - Se o comando do usuário não tiver nenhuma relação com o texto e/ou com o histórico, ou não for claro, você deve retornar uma mensagem informando que não foi possível entender o comando, no sumário e retornar o valor do texto None (None do Python).
             - O comando não precisa ter relação direta com o contexto do campo, o contexto deve ser utilizado apenas como balizador de como responder para cada campo informado.
+            - Caso o usuário solicite para expandir, detalhar, aumentar o tamanho do texto ou declaradamente informe um limite de caracteres maior do que o limite de caracteres do campo (informado anteriormente), você deve respeitar o comando do usuário, limitando-se agora a um limite máximo de caracteres no valor de {int(limite_maximo)} caracteres.
             """
 
             prompt_assistente = """Você é um chatbot do sistema Banco de Preços. Especializado em automatizar o preenchimento de alguns campos em diversos formulários da plataforma.
